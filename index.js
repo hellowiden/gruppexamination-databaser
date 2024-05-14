@@ -7,6 +7,11 @@ const port = 3000;
 
 app.use(express.json());
 
+// Root URL
+app.get('/', (req, res) => {
+  res.send('Welcome to the homepage');
+});
+
 // User signup
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
@@ -19,7 +24,7 @@ app.post('/signup', async (req, res) => {
         res.status(201).send('User created successfully');
       }
     });
-  } catch {
+  } catch (err) {
     res.status(500).send('Error creating user');
   }
 });
@@ -30,8 +35,7 @@ app.post('/login', (req, res) => {
   db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
     if (err) {
       res.status(500).send('Error logging in');
-    }
-    if (user && await bcrypt.compare(password, user.password)) {
+    } else if (user && await bcrypt.compare(password, user.password)) {
       res.status(200).send('Login successful');
     } else {
       res.status(401).send('Invalid username or password');

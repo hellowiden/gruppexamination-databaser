@@ -13,7 +13,9 @@ const db = new sqlite3.Database('./mydatabase.db', (err) => {
     )`);
     db.run(`CREATE TABLE IF NOT EXISTS groups (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT UNIQUE
+      name TEXT UNIQUE,
+      owner_id INTEGER,
+      FOREIGN KEY (owner_id) REFERENCES users(id)
     )`);
     db.run(`CREATE TABLE IF NOT EXISTS user_groups (
       user_id INTEGER,
@@ -22,12 +24,13 @@ const db = new sqlite3.Database('./mydatabase.db', (err) => {
       FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (group_id) REFERENCES groups(id)
     )`);
-    db.run(`CREATE TABLE IF NOT EXISTS notes (
+    db.run(`CREATE TABLE IF NOT EXISTS messages (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER,
-      title TEXT,
+      user_id INTEGER,
+      group_id INTEGER,
       content TEXT,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (group_id) REFERENCES groups(id)
     )`);
   }
 });

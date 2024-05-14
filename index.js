@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config(); 
 
 const express = require('express');
 const bcrypt = require('bcrypt');
@@ -68,15 +68,18 @@ app.post('/login', validateUserInput, (req, res, next) => {
   });
 });
 
-// Create a group
-app.post('/groups', [body('name').isString().trim().notEmpty()], (req, res, next) => {
+// Create a group (channel) with an owner
+app.post('/groups', [
+  body('name').isString().trim().notEmpty(),
+  body('ownerId').isInt()
+], (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { name } = req.body;
-  db.run('INSERT INTO groups (name) VALUES (?)', [name], function(err) {
+  const { name, ownerId } = req.body;
+  db.run('INSERT INTO groups (name, owner_id) VALUES (?, ?)', [name, ownerId], function(err) {
     if (err) {
       return next(err);
     }
@@ -84,8 +87,8 @@ app.post('/groups', [body('name').isString().trim().notEmpty()], (req, res, next
   });
 });
 
-// Join a group
-app.post('/groups/join', [
+// Subscribe to a group (channel)
+app.post('/groups/subscribe', [
   body('userId').isInt(),
   body('groupId').isInt()
 ], (req, res, next) => {
@@ -99,14 +102,14 @@ app.post('/groups/join', [
     if (err) {
       return next(err);
     }
-    res.status(200).send('Joined group successfully');
+    res.status(200).send('Subscribed to group successfully');
   });
 });
 
-// Create a note
-app.post('/notes', [
+// Post a message to a group (channel)
+app.post('/messages', [
   body('userId').isInt(),
-  body('title').isString().trim().notEmpty(),
+  body('groupId').isInt(),
   body('content').isString().trim().notEmpty()
 ], (req, res, next) => {
   const errors = validationResult(req);
@@ -114,68 +117,43 @@ app.post('/notes', [
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { userId, title, content } = req.body;
-  db.run('INSERT INTO notes (userId, title, content) VALUES (?, ?, ?)', [userId, title, content], function(err) {
+  const { userId, groupId, content } = req.body;
+
+  // Check if user is subscribed to the group
+  db.get('SELECT * FROM user_groups WHERE user_id = ? AND group_id = ?', [userId, groupId], (err, row) => {
     if (err) {
       return next(err);
     }
-    res.status(201).send('Note created successfully');
+    if (!row) {
+      return res.status(403).send('User not subscribed to this group');
+    }
+
+    db.run('INSERT INTO messages (user_id, group_id, content) VALUES (?, ?, ?)', [userId, groupId, content], function(err) {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).send('Message posted successfully');
+    });
   });
 });
 
-// Read all notes for a user
-app.get('/notes/:userId', [param('userId').isInt()], (req, res, next) => {
+// Read all messages for a group (channel)
+app.get('/groups/:groupId/messages', [param('groupId').isInt()], (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const userId = req.params.userId;
-  db.all('SELECT * FROM notes WHERE userId = ?', [userId], (err, notes) => {
+  const groupId = req.params.groupId;
+  db.all('SELECT * FROM messages WHERE group_id = ?', [groupId], (err, messages) => {
     if (err) {
       return next(err);
     }
-    res.status(200).json(notes);
+    res.status(200).json(messages);
   });
 });
 
-// Update a note
-app.put('/notes/:noteId', [
-  param('noteId').isInt(),
-  body('title').isString().trim().notEmpty(),
-  body('content').isString().trim().notEmpty()
-], (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const noteId = req.params.noteId;
-  const { title, content } = req.body;
-  db.run('UPDATE notes SET title = ?, content = ? WHERE id = ?', [title, content, noteId], function(err) {
-    if (err) {
-      return next(err);
-    }
-    res.status(200).send('Note updated successfully');
-  });
-});
-
-// Delete a note
-app.delete('/notes/:noteId', [param('noteId').isInt()], (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const noteId = req.params.noteId;
-  db.run('DELETE FROM notes WHERE id = ?', [noteId], function(err) {
-    if (err) {
-      return next(err);
-    }
-    res.status(200).send('Note deleted successfully');
-  });
-});
-
+// Listen on the specified port
 app.listen(port, () => {
   console.log(`Server is running and listening on port ${port}`);
 });

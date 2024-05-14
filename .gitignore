@@ -1,0 +1,9 @@
+# Node.js-moduler
+/node_modules
+
+# Lokala konfigurationsfiler
+.env
+
+# Övriga filer och mappar som inte ska versionhanteras
+.DS_Store
+.vscode/

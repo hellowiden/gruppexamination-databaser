@@ -91,6 +91,9 @@ app.post('/signup', validateUserInput, async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], function(err) {
       if (err) {
+        if (err.code === 'SQLITE_CONSTRAINT') {
+          return res.status(409).json({ error: 'Username already exists' });
+        }
         return next(err);
       }
       res.status(201).send('User created successfully');
@@ -99,6 +102,7 @@ app.post('/signup', validateUserInput, async (req, res, next) => {
     next(err);
   }
 });
+
 
 // Read a user by ID
 app.get('/users/:id', [param('id').isInt()], (req, res, next) => {

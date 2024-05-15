@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
         text-decoration: underline;
       }
     </style>
-    <h1>Welcome to the homepage</h1>
+    <h1>Gruppexamination - SQL bulletin</h1>
     <ul>
       <li><a href="/signup">Signup</a></li>
       <li><a href="/users/:id">Read User by ID</a></li>

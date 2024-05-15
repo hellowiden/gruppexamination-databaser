@@ -1,11 +1,8 @@
-// db.js
 const sqlite3 = require('sqlite3').verbose();
 const dotenv = require('dotenv');
 
-// Load environment variables from .env file
 dotenv.config();
 
-// Connect to SQLite database
 const db = new sqlite3.Database('./mydatabase.db', (err) => {
   if (err) {
     console.error('Error opening database', err.message);

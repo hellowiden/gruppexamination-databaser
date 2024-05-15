@@ -1,14 +1,16 @@
+// index.js
 require('dotenv').config();
-
 const express = require('express');
 const bcrypt = require('bcrypt');
 const db = require('./db');
 const { body, param, validationResult } = require('express-validator');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors());
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -24,7 +26,57 @@ const validateUserInput = [
 
 // Root URL
 app.get('/', (req, res) => {
-  res.send('Welcome to the homepage');
+  res.send(`
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      h1 {
+        color: #333;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        margin: 10px 0;
+      }
+      a {
+        text-decoration: none;
+        color: #007BFF;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+    <h1>Welcome to the homepage</h1>
+    <ul>
+      <li><a href="/signup">Signup</a></li>
+      <li><a href="/users/:id">Read User by ID</a></li>
+      <li><a href="/users/:id">Update User</a></li>
+      <li><a href="/users/:id">Delete User</a></li>
+      <li><a href="/groups">Read All Groups</a></li>
+      <li><a href="/groups/:id">Read Group by ID</a></li>
+      <li><a href="/groups">Create Group</a></li>
+      <li><a href="/groups/:id">Update Group</a></li>
+      <li><a href="/groups/:id">Delete Group</a></li>
+      <li><a href="/messages">Read All Messages</a></li>
+      <li><a href="/messages/:id">Read Message by ID</a></li>
+      <li><a href="/messages">Create Message</a></li>
+      <li><a href="/messages/:id">Update Message</a></li>
+      <li><a href="/messages/:id">Delete Message</a></li>
+      <li><a href="/groups/subscribe">Subscribe to Group</a></li>
+      <li><a href="/groups/unsubscribe">Unsubscribe from Group</a></li>
+    </ul>
+  `);
 });
 
 // Create a new user (signup)
@@ -140,11 +192,22 @@ app.post('/groups', [
   }
 
   const { name, ownerId } = req.body;
-  db.run('INSERT INTO groups (name, owner_id) VALUES (?, ?)', [name, ownerId], function(err) {
+
+  // Check if the owner exists
+  db.get('SELECT * FROM users WHERE id = ?', [ownerId], (err, user) => {
     if (err) {
       return next(err);
     }
-    res.status(201).send('Group created successfully');
+    if (!user) {
+      return res.status(404).send('Owner not found');
+    }
+
+    db.run('INSERT INTO groups (name, owner_id) VALUES (?, ?)', [name, ownerId], function(err) {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).send('Group created successfully');
+    });
   });
 });
 
@@ -365,11 +428,31 @@ app.post('/groups/subscribe', [
   }
 
   const { userId, groupId } = req.body;
-  db.run('INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)', [userId, groupId], function(err) {
+
+  // Check if the user and group exist
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
     if (err) {
       return next(err);
     }
-    res.status(200).send('Subscribed to group successfully');
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    db.get('SELECT * FROM groups WHERE id = ?', [groupId], (err, group) => {
+      if (err) {
+        return next(err);
+      }
+      if (!group) {
+        return res.status(404).send('Group not found');
+      }
+
+      db.run('INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)', [userId, groupId], function(err) {
+        if (err) {
+          return next(err);
+        }
+        res.status(200).send('Subscribed to group successfully');
+      });
+    });
   });
 });
 
@@ -384,18 +467,31 @@ app.delete('/groups/unsubscribe', [
   }
 
   const { userId, groupId } = req.body;
-  db.run('DELETE FROM user_groups WHERE user_id = ? AND group_id = ?', [userId, groupId], function(err) {
+
+  // Check if the subscription exists
+  db.get('SELECT * FROM user_groups WHERE user_id = ? AND group_id = ?', [userId, groupId], (err, subscription) => {
     if (err) {
       return next(err);
     }
-    if (this.changes === 0) {
+    if (!subscription) {
       return res.status(404).send('Subscription not found');
     }
-    res.status(200).send('Unsubscribed from group successfully');
+
+    db.run('DELETE FROM user_groups WHERE user_id = ? AND group_id = ?', [userId, groupId], function(err) {
+      if (err) {
+        return next(err);
+      }
+      if (this.changes === 0) {
+        return res.status(404).send('Subscription not found');
+      }
+      res.status(200).send('Unsubscribed from group successfully');
+    });
   });
 });
 
 // Listen on the specified port
 app.listen(port, () => {
+  const localURL = `http://localhost:${port}`;
   console.log(`Server is running and listening on port ${port}`);
+  console.log(`Open your browser and navigate to: ${localURL}`);
 });

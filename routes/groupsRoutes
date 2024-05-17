@@ -1,0 +1,21 @@
+const express = require('express');
+const router = express.Router();
+const groupsController = require('../controllers/groupsController');
+const { body, param, validationResult } = require('express-validator');
+
+// POST GROUPS
+router.post('/', groupsController.createGroup);
+//GET ALL GROUPS
+router.get('/', groupsController.getAllGroups);
+// GET GROUPS BY ID
+router.get('/:id', groupsController.getGroupById);
+// PUT GROUPS BY ID
+router.put('/:id', groupsController.updateGroup);
+// DELETE GROUPS BY ID
+router.delete('/:id',groupsController.deleteGroup);
+// POST GROUPS BY SUBSCRIBE
+router.post('/subscribe', groupsController.subscribeGroup);
+//! DELETE SUBSCRIBE
+//! router.delete('/unsubscribe', groupsController.unsubscribeGroup);
+
+module.exports = router;

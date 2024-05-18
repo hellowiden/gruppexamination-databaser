@@ -16,6 +16,8 @@ router.delete('/:id',groupsController.deleteGroup);
 // POST GROUPS BY SUBSCRIBE
 router.post('/subscribe', groupsController.subscribeGroup);
 //! DELETE SUBSCRIBE
-//! router.delete('/unsubscribe', groupsController.unsubscribeGroup);
+// router.delete(
+//   '/unsubscribe', groupsController.unsubscribeGroup
+// );
 
 module.exports = router;

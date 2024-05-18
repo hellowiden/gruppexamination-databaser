@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const db = require('../db');
-const { body, param, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 
 //* Create a new user (signup)
 exports.handleSignup = async (req, res, next) => {

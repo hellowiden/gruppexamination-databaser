@@ -182,11 +182,10 @@ exports.subscribeGroup = [
   },
 ];
 
-// Unsubscribe from a group (channel)
-// exports.unsubscribeGroup = [
-//   body('userId').isInt(),
-//   body('groupId').isInt(),
-//   async (req, res, next) => {
+//! Subscribe to a group (channel)
+// exports.unsubscribeGroup = (
+//   [body('userId').isInt(), body('groupId').isInt()],
+//   (req, res, next) => {
 //     const errors = validationResult(req);
 //     if (!errors.isEmpty()) {
 //       return res.status(400).json({ errors: errors.array() });
@@ -194,48 +193,32 @@ exports.subscribeGroup = [
 
 //     const { userId, groupId } = req.body;
 
-//     try {
-//       // Check if the subscription exists
-//       const subscription = await new Promise((resolve, reject) => {
-//         db.get(
-//           'SELECT * FROM user_groups WHERE user_id = ? AND group_id = ?',
-//           [userId, groupId],
-//           (err, row) => {
-//             if (err) {
-//               reject(err);
-//             } else {
-//               resolve(row);
-//             }
-//           }
-//         );
-//       });
+//     // Check if the subscription exists
+//     db.get(
+//       'SELECT * FROM user_groups WHERE user_id = ? AND group_id = ?',
+//       [userId, groupId],
+//       (err, subscription) => {
+//         if (err) {
+//           return next(err);
+//         }
+//         if (!subscription) {
+//           return res.status(404).send('Subscription not found');
+//         }
 
-//       if (!subscription) {
-//         return res.status(404).send('Subscription not found');
-//       }
-
-//       // Delete the subscription
-//       const result = await new Promise((resolve, reject) => {
 //         db.run(
 //           'DELETE FROM user_groups WHERE user_id = ? AND group_id = ?',
 //           [userId, groupId],
 //           function (err) {
 //             if (err) {
-//               reject(err);
-//             } else {
-//               resolve(this.changes);
+//               return next(err);
 //             }
+//             if (this.changes === 0) {
+//               return res.status(404).send('Subscription not found');
+//             }
+//             res.status(200).send('Unsubscribed from group successfully');
 //           }
 //         );
-//       });
-
-//       if (result === 0) {
-//         return res.status(404).send('Subscription not found');
 //       }
-
-//       res.status(200).send('Unsubscribed from group successfully');
-//     } catch (err) {
-//       next(err);
-//     }
-//   },
-// ];
+//     );
+//   }
+// );

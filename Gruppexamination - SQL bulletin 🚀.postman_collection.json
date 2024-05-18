@@ -18,7 +18,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"Sanna\",\n  \"password\": \"p123456\"\n}",
+							"raw": "{\n  \"username\": \"Nils\",\n  \"password\": \"123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -26,13 +26,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/signup",
+							"raw": "http://localhost:3000/users/signup",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"users",
 								"signup"
 							]
 						}
@@ -57,7 +58,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/users/2",
+							"raw": "http://localhost:3000/users/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -65,7 +66,7 @@
 							"port": "3000",
 							"path": [
 								"users",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -78,7 +79,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"AdamS\",\n  \"password\": \"p123456\"\n}",
+							"raw": "{\n  \"username\": \"Adam\",\n  \"password\": \"234567\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -86,7 +87,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/users/7",
+							"raw": "http://localhost:3000/users/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -94,7 +95,7 @@
 							"port": "3000",
 							"path": [
 								"users",
-								"7"
+								"1"
 							]
 						}
 					},
@@ -115,7 +116,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/users/2",
+							"raw": "http://localhost:3000/users/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -123,7 +124,7 @@
 							"port": "3000",
 							"path": [
 								"users",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -141,7 +142,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"kallegruppen\",\n  \"ownerId\": 1\n}",
+							"raw": "{\n  \"name\": \"Nilsgrupp\",\n  \"ownerId\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -233,7 +234,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Adamsnew\",\n  \"ownerId\": 1\n}\n",
+							"raw": "{\n  \"name\": \"PetersGrupp\",\n  \"ownerId\": 1\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -270,7 +271,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/groups/5",
+							"raw": "http://localhost:3000/groups/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -278,7 +279,7 @@
 							"port": "3000",
 							"path": [
 								"groups",
-								"5"
+								"1"
 							]
 						}
 					},
@@ -291,7 +292,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"userId\": 2,\n  \"groupId\": 1\n}\n",
+							"raw": "{\n  \"userId\": 1,\n  \"groupId\": 1\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -354,7 +355,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"userId\": 2,\n  \"groupId\": 1,\n  \"content\": \"This is a message\"\n}\n",
+							"raw": "{\n  \"userId\": 1,\n  \"groupId\": 1,\n  \"content\": \"Hej\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -416,7 +417,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 1\n}\n",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -445,7 +446,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"content\": \"Updated message content\"\n}\n",
+							"raw": "{\n  \"content\": \"Update message\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -474,7 +475,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": \"1\"\n}\n",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"

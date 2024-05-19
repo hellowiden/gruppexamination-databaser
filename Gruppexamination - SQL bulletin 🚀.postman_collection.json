@@ -133,10 +133,10 @@
 			]
 		},
 		{
-			"name": "Groups",
+			"name": "Channels",
 			"item": [
 				{
-					"name": "POST /groups",
+					"name": "POST /channels",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -150,14 +150,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/groups/",
+							"raw": "http://localhost:3000/channels/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"groups",
+								"channels",
 								""
 							]
 						}
@@ -165,7 +165,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /groups",
+					"name": "GET /channels",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -196,7 +196,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /groups/:id",
+					"name": "GET /channels/:id",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -228,7 +228,7 @@
 					"response": []
 				},
 				{
-					"name": "PUT /groups/:id",
+					"name": "PUT /channels/:id",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -242,14 +242,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/groups/1",
+							"raw": "http://localhost:3000/channels/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"groups",
+								"channels",
 								"1"
 							]
 						}
@@ -257,7 +257,7 @@
 					"response": []
 				},
 				{
-					"name": "DELETE /groups/:id",
+					"name": "DELETE /channels/:id",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -271,14 +271,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/groups/1",
+							"raw": "http://localhost:3000/channels/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"groups",
+								"channels",
 								"1"
 							]
 						}
@@ -286,13 +286,13 @@
 					"response": []
 				},
 				{
-					"name": "POST /groups/subscribe",
+					"name": "POST /channels/subscribe",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"userId\": 1,\n  \"groupId\": 1\n}\n",
+							"raw": "{\n  \"userId\": 1,\n  \"channelId\": 1\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -300,14 +300,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/groups/subscribe",
+							"raw": "http://localhost:3000/channels/subscribe",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"groups",
+								"channels",
 								"subscribe"
 							]
 						}
@@ -315,13 +315,13 @@
 					"response": []
 				},
 				{
-					"name": "POST /groups/unsubscribe",
+					"name": "POST /channels/unsubscribe",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"userId\": 1,\n  \"groupId\": 1\n}\n",
+							"raw": "{\n  \"userId\": 1,\n  \"channelId\": 1\n  }\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -329,14 +329,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/groups/unsubscribe",
+							"raw": "http://localhost:3000/channels/unsubscribe",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"groups",
+								"channels",
 								"unsubscribe"
 							]
 						}

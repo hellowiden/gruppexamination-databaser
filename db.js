@@ -17,33 +17,40 @@ const db = new sqlite3.Database('./mydatabase.db', (err) => {
       )`, (err) => {
         if (err) console.error('Error creating users table', err.message);
       });
-      db.run(`CREATE TABLE IF NOT EXISTS groups (
+      db.run(`CREATE TABLE IF NOT EXISTS channels (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT UNIQUE,
         owner_id INTEGER,
         FOREIGN KEY (owner_id) REFERENCES users(id)
       )`, (err) => {
-        if (err) console.error('Error creating groups table', err.message);
+        if (err) console.error('Error creating channelss table', err.message);
       });
-      db.run(`CREATE TABLE IF NOT EXISTS user_groups (
+      db.run(
+        `CREATE TABLE IF NOT EXISTS user_channels (
         user_id INTEGER,
-        group_id INTEGER,
-        PRIMARY KEY (user_id, group_id),
+        channel_id INTEGER,
+        PRIMARY KEY (user_id, channel_id),
         FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (group_id) REFERENCES groups(id)
-      )`, (err) => {
-        if (err) console.error('Error creating user_groups table', err.message);
-      });
-      db.run(`CREATE TABLE IF NOT EXISTS messages (
+        FOREIGN KEY (channel_id) REFERENCES channels(id)
+      )`,
+        (err) => {
+          if (err)
+            console.error('Error creating user_channels table', err.message);
+        }
+      );
+      db.run(
+        `CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
-        group_id INTEGER,
+        channel_id INTEGER,
         content TEXT,
         FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (group_id) REFERENCES groups(id)
-      )`, (err) => {
-        if (err) console.error('Error creating messages table', err.message);
-      });
+        FOREIGN KEY (channel_id) REFERENCES channels(id)
+      )`,
+        (err) => {
+          if (err) console.error('Error creating messages table', err.message);
+        }
+      );
       db.run('COMMIT', (err) => {
         if (err) console.error('Error committing transaction', err.message);
       });

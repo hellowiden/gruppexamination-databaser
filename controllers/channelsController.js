@@ -1,8 +1,8 @@
 const { body, param, validationResult } = require('express-validator');
 const db = require('../db');
 
-//* Create a group (channel) with an owner
-exports.createGroup = [
+//* Create a channel with an owner
+exports.createChannel = [
   body('name').isString().trim().notEmpty(),
   body('ownerId').isInt(),
   (req, res, next) => {
@@ -23,31 +23,31 @@ exports.createGroup = [
       }
 
       db.run(
-        'INSERT INTO groups (name, owner_id) VALUES (?, ?)',
+        'INSERT INTO channels (name, owner_id) VALUES (?, ?)',
         [name, ownerId],
         function (err) {
           if (err) {
             return next(err);
           }
-          res.status(201).send('Group created successfully');
+          res.status(201).send('Channel created successfully');
         }
       );
     });
   },
 ];
 
-//* Read all groups
-exports.getAllGroups = (req, res, next) => {
-  db.all('SELECT * FROM groups', (err, groups) => {
+//* Read all channels
+exports.getAllChannels = (req, res, next) => {
+  db.all('SELECT * FROM channels', (err, channels) => {
     if (err) {
       return next(err);
     }
-    res.status(200).json(groups);
+    res.status(200).json(channels);
   });
 };
 
-//* Read a group by ID
-exports.getGroupById = [
+//* Read a channel by ID
+exports.getChannelById = [
   param('id').isInt(),
   (req, res, next) => {
     const errors = validationResult(req);
@@ -55,21 +55,25 @@ exports.getGroupById = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const groupId = req.params.id;
-    db.get('SELECT * FROM groups WHERE id = ?', [groupId], (err, group) => {
-      if (err) {
-        return next(err);
+    const channelId = req.params.id;
+    db.get(
+      'SELECT * FROM channels WHERE id = ?',
+      [channelId],
+      (err, channel) => {
+        if (err) {
+          return next(err);
+        }
+        if (!channel) {
+          return res.status(404).send('Channel not found');
+        }
+        res.status(200).json(channel);
       }
-      if (!group) {
-        return res.status(404).send('Group not found');
-      }
-      res.status(200).json(group);
-    });
+    );
   },
 ];
 
-//* Update a group
-exports.updateGroup = [
+//* Update a channel
+exports.updateChannel = [
   param('id').isInt(),
   body('name').optional().isString().trim().notEmpty(),
   body('ownerId').optional().isInt(),
@@ -79,7 +83,7 @@ exports.updateGroup = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const groupId = req.params.id;
+    const channelId = req.params.id;
     const { name, ownerId } = req.body;
     let updates = [];
     let params = [];
@@ -97,26 +101,26 @@ exports.updateGroup = [
       return res.status(400).send('No updates provided');
     }
 
-    params.push(groupId);
+    params.push(channelId);
 
     db.run(
-      `UPDATE groups SET ${updates.join(', ')} WHERE id = ?`,
+      `UPDATE channels SET ${updates.join(', ')} WHERE id = ?`,
       params,
       function (err) {
         if (err) {
           return next(err);
         }
         if (this.changes === 0) {
-          return res.status(404).send('Group not found');
+          return res.status(404).send('Channel not found');
         }
-        res.status(200).send('Group updated successfully');
+        res.status(200).send('Channel updated successfully');
       }
     );
   },
 ];
 
-//* Delete a group
-exports.deleteGroup = [
+//* Delete a channel
+exports.deleteChannel = [
   param('id').isInt(),
   (req, res, next) => {
     const errors = validationResult(req);
@@ -124,30 +128,30 @@ exports.deleteGroup = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const groupId = req.params.id;
-    db.run('DELETE FROM groups WHERE id = ?', [groupId], function (err) {
+    const channelId = req.params.id;
+    db.run('DELETE FROM channels WHERE id = ?', [channelId], function (err) {
       if (err) {
         return next(err);
       }
       if (this.changes === 0) {
-        return res.status(404).send('Group not found');
+        return res.status(404).send('Channel not found');
       }
-      res.status(200).send('Group deleted successfully');
+      res.status(200).send('Channel deleted successfully');
     });
   },
 ];
 
-//* Subscribe to a group (channel)
-exports.subscribeGroup = [
+//* Subscribe to a channel
+exports.subscribeChannel = [
   body('userId').isInt(),
-  body('groupId').isInt(),
+  body('channelId').isInt(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { userId, groupId } = req.body;
+    const { userId, channelId } = req.body;
 
     // Check if the user exists
     db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
@@ -158,45 +162,49 @@ exports.subscribeGroup = [
         return res.status(404).send('User not found');
       }
 
-      // Check if the group exists
-      db.get('SELECT * FROM groups WHERE id = ?', [groupId], (err, group) => {
-        if (err) {
-          return next(err);
-        }
-        if (!group) {
-          return res.status(404).send('Group not found');
-        }
-
-        db.run(
-          'INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)',
-          [userId, groupId],
-          function (err) {
-            if (err) {
-              return next(err);
-            }
-            res.status(200).send('Subscribed to group successfully');
+      // Check if the channel exists
+      db.get(
+        'SELECT * FROM channels WHERE id = ?',
+        [channelId],
+        (err, channel) => {
+          if (err) {
+            return next(err);
           }
-        );
-      });
+          if (!channel) {
+            return res.status(404).send('Channel not found');
+          }
+
+          db.run(
+            'INSERT INTO user_channels (user_id, channel_id) VALUES (?, ?)',
+            [userId, channelId],
+            function (err) {
+              if (err) {
+                return next(err);
+              }
+              res.status(200).send('Subscribed to channel successfully');
+            }
+          );
+        }
+      );
     });
   },
 ];
 
-//! Subscribe to a group (channel)
-// exports.unsubscribeGroup = (
-//   [body('userId').isInt(), body('groupId').isInt()],
+//! Subscribe to a channel (channel)
+// exports.unsubscribeChannel = (
+//   [body('userId').isInt(), body('channelId').isInt()],
 //   (req, res, next) => {
 //     const errors = validationResult(req);
 //     if (!errors.isEmpty()) {
 //       return res.status(400).json({ errors: errors.array() });
 //     }
 
-//     const { userId, groupId } = req.body;
+//     const { userId, channelId } = req.body;
 
 //     // Check if the subscription exists
 //     db.get(
-//       'SELECT * FROM user_groups WHERE user_id = ? AND group_id = ?',
-//       [userId, groupId],
+//       'SELECT * FROM user_channels WHERE user_id = ? AND channel_id = ?',
+//       [userId, channelId],
 //       (err, subscription) => {
 //         if (err) {
 //           return next(err);
@@ -206,8 +214,8 @@ exports.subscribeGroup = [
 //         }
 
 //         db.run(
-//           'DELETE FROM user_groups WHERE user_id = ? AND group_id = ?',
-//           [userId, groupId],
+//           'DELETE FROM user_channels WHERE user_id = ? AND channel_id = ?',
+//           [userId, channelId],
 //           function (err) {
 //             if (err) {
 //               return next(err);
@@ -215,7 +223,7 @@ exports.subscribeGroup = [
 //             if (this.changes === 0) {
 //               return res.status(404).send('Subscription not found');
 //             }
-//             res.status(200).send('Unsubscribed from group successfully');
+//             res.status(200).send('Unsubscribed from channel successfully');
 //           }
 //         );
 //       }

@@ -9,14 +9,18 @@ exports.createMessage = (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { userId, groupId, content } = req.body;
+  const { userId, channelId, content } = req.body;
 
-  db.run('INSERT INTO messages (user_id, group_id, content) VALUES (?, ?, ?)', [userId, groupId, content], function(err) {
-    if (err) {
-      return next(err);
+  db.run(
+    'INSERT INTO messages (user_id, channel_id, content) VALUES (?, ?, ?)',
+    [userId, channelId, content],
+    function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).send('Message posted successfully');
     }
-    res.status(201).send('Message posted successfully');
-  });
+  );
 };
 
 

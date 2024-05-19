@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = 3000;
 const usersRoutes = require('./routes/usersRoutes');
-const groupsRoutes = require('./routes/groupsRoutes');
+const channelsRoutes = require('./routes/channelsRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
 const { body, validationResult } = require('express-validator');
 const db = require('./db');
@@ -47,22 +47,22 @@ app.get('/', (req, res) => {
     </style>
     <h1>Gruppexamination - SQL bulletin</h1>
     <ul>
-      <li><a href="/signup">Signup</a></li>
+      <li><a href="/users/signup">Signup</a></li>
       <li><a href="/users/:id">Read User by ID</a></li>
       <li><a href="/users/:id">Update User</a></li>
       <li><a href="/users/:id">Delete User</a></li>
-      <li><a href="/groups">Read All Groups</a></li>
-      <li><a href="/groups/:id">Read Group by ID</a></li>
-      <li><a href="/groups">Create Group</a></li>
-      <li><a href="/groups/:id">Update Group</a></li>
-      <li><a href="/groups/:id">Delete Group</a></li>
+      <li><a href="/channels">Read All channels</a></li>
+      <li><a href="/channels/:id">Read channel by ID</a></li>
+      <li><a href="/channels">Create channel</a></li>
+      <li><a href="/channels/:id">Update channel</a></li>
+      <li><a href="/channels/:id">Delete channel</a></li>
       <li><a href="/messages">Read All Messages</a></li>
       <li><a href="/messages/:id">Read Message by ID</a></li>
       <li><a href="/messages">Create Message</a></li>
       <li><a href="/messages/:id">Update Message</a></li>
       <li><a href="/messages/:id">Delete Message</a></li>
-      <li><a href="/groups/subscribe">Subscribe to Group</a></li>
-      <li><a href="/groups/unsubscribe">Unsubscribe from Group</a></li>
+      <li><a href="/channels/subscribe">Subscribe to channel</a></li>
+      <li><a href="/channels/unsubscribe">Unsubscribe from channel</a></li>
     </ul>
   `);
 });
@@ -71,20 +71,20 @@ app.get('/', (req, res) => {
 
 //* Delete unsubscribe
 app.delete(
-  '/groups/unsubscribe',
-  [body('userId').isInt(), body('groupId').isInt()],
+  '/channels/unsubscribe',
+  [body('userId').isInt(), body('channelId').isInt()],
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { userId, groupId } = req.body;
+    const { userId, channelId } = req.body;
 
     // Check if the subscription exists
     db.get(
-      'SELECT * FROM user_groups WHERE user_id = ? AND group_id = ?',
-      [userId, groupId],
+      'SELECT * FROM user_channels WHERE user_id = ? AND channel_id = ?',
+      [userId, channelId],
       (err, subscription) => {
         if (err) {
           return next(err);
@@ -94,8 +94,8 @@ app.delete(
         }
 
         db.run(
-          'DELETE FROM user_groups WHERE user_id = ? AND group_id = ?',
-          [userId, groupId],
+          'DELETE FROM user_channels WHERE user_id = ? AND channel_id = ?',
+          [userId, channelId],
           function (err) {
             if (err) {
               return next(err);
@@ -103,7 +103,7 @@ app.delete(
             if (this.changes === 0) {
               return res.status(404).send('Subscription not found');
             }
-            res.status(200).send('Unsubscribed from group successfully');
+            res.status(200).send('Unsubscribed from channel successfully');
           }
         );
       }
@@ -114,8 +114,14 @@ app.delete(
 //! -----------------------
 
 app.use('/users', usersRoutes);
-app.use('/groups', groupsRoutes);
+app.use('/channels', channelsRoutes);
 app.use('/messages', messagesRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port:${port}`);

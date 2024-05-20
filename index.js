@@ -30,40 +30,8 @@ app.get('/', (req, res) => {
       h1 {
         color: #333;
       }
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-      li {
-        margin: 10px 0;
-      }
-      a {
-        text-decoration: none;
-        color: #007BFF;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
     </style>
     <h1>Gruppexamination - SQL bulletin</h1>
-    <ul>
-      <li><a href="/users/signup">Signup</a></li>
-      <li><a href="/users/:id">Read User by ID</a></li>
-      <li><a href="/users/:id">Update User</a></li>
-      <li><a href="/users/:id">Delete User</a></li>
-      <li><a href="/channels">Read All channels</a></li>
-      <li><a href="/channels/:id">Read channel by ID</a></li>
-      <li><a href="/channels">Create channel</a></li>
-      <li><a href="/channels/:id">Update channel</a></li>
-      <li><a href="/channels/:id">Delete channel</a></li>
-      <li><a href="/messages">Read All Messages</a></li>
-      <li><a href="/messages/:id">Read Message by ID</a></li>
-      <li><a href="/messages">Create Message</a></li>
-      <li><a href="/messages/:id">Update Message</a></li>
-      <li><a href="/messages/:id">Delete Message</a></li>
-      <li><a href="/channels/subscribe">Subscribe to channel</a></li>
-      <li><a href="/channels/unsubscribe">Unsubscribe from channel</a></li>
-    </ul>
   `);
 });
 

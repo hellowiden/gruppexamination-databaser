@@ -1,6 +1,7 @@
 # Node.js-moduler
 /node_modules
 
+
 # Lokala konfigurationsfiler
 .env
 

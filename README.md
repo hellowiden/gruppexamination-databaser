@@ -2,7 +2,7 @@
 
 ## 🌟 **Overview**
 
-Welcome to ***SQL Bulletin***, a service functioning as a bulletin board where users can post messages to channels they subscribe to and view other messages in these channels. Think of this as a very simplified version of Facebook groups.
+Welcome to **_SQL Bulletin_**, a service functioning as a bulletin board where users can post messages to channels they subscribe to and view other messages in these channels. Think of this as a very simplified version of Facebook groups.
 
 ## 🛠️ **Features**
 
@@ -17,8 +17,7 @@ Welcome to ***SQL Bulletin***, a service functioning as a bulletin board where u
 
 - Marcus Widén
 - Christian Lindberg
-  
+
 ## 📅 **Project Timeline and Due Date**
 
 - **Project Timeline**: May 15, 2024 - May 20, 2024
-- **Due Date**: May 20, 2024, 23:59

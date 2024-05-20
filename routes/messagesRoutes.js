@@ -10,9 +10,8 @@ router.get('/', messagesController.getAllMessages)
 router.get('/:id', [param('id').isInt()], messagesController.getMessageById);
 //* POST MESSAGE
 router.post('/',  body('userId').isInt(),
-  body('groupId').isInt(),
-  body('content').isString().trim().notEmpty(),
-  checkSubscription, messagesController.createMessage);
+  body('channelId').isInt(),
+  body('content').isString().trim().notEmpty(), messagesController.createMessage);
 //* PUT MESSAGES BY ID
 router.put(
   '/:id',

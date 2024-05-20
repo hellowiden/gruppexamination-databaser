@@ -4,6 +4,7 @@ const db = require('../db');
 
 //* Create a new message
 exports.createMessage = (req, res, next) => {
+  // Validate request body
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -11,18 +12,32 @@ exports.createMessage = (req, res, next) => {
 
   const { userId, channelId, content } = req.body;
 
-  db.run(
-    'INSERT INTO messages (user_id, channel_id, content) VALUES (?, ?, ?)',
-    [userId, channelId, content],
-    function (err) {
+  // Check if user is subscribed to the channel
+  db.get(
+    'SELECT * FROM user_channels WHERE user_id = ? AND channel_id = ?',
+    [userId, channelId],
+    (err, row) => {
       if (err) {
         return next(err);
       }
-      res.status(201).send('Message posted successfully');
+      if (!row) {
+        return res.status(403).send('User not subscribed to this channel');
+      }
+
+      // User is subscribed, create the message
+      db.run(
+        'INSERT INTO messages (user_id, channel_id, content) VALUES (?, ?, ?)',
+        [userId, channelId, content],
+        function (err) {
+          if (err) {
+            return next(err);
+          }
+          res.status(201).send('Message posted successfully');
+        }
+      );
     }
   );
 };
-
 
 //* Read all messages
 exports.getAllMessages = (req, res, next) => {

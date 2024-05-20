@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/usersController');
-const { body, param, validationResult } = require('express-validator');
+const { param } = require('express-validator');
 
 // POST SIGNUP
 router.post('/signup', usersController.handleSignup);

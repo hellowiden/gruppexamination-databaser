@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const messagesController = require('../controllers/messagesController');
-const { checkSubscription } = require('../utils/checkSub')
 const { body, param } = require('express-validator');
 
 //* GET ALL MESSAGES

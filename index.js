@@ -77,8 +77,6 @@ app.delete(
   }
 );
 
-//! -----------------------
-
 // Other routes
 app.use('/users', usersRoutes);
 app.use('/channels', channelsRoutes);

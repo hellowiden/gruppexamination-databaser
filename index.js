@@ -35,8 +35,6 @@ app.get('/', (req, res) => {
   `);
 });
 
-//! ----------- Kvar att flytta ------------
-
 //* Delete unsubscribe
 app.delete(
   '/channels/unsubscribe',

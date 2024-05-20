@@ -113,6 +113,7 @@ app.delete(
 
 //! -----------------------
 
+// Other routes
 app.use('/users', usersRoutes);
 app.use('/channels', channelsRoutes);
 app.use('/messages', messagesRoutes);
@@ -124,5 +125,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port:${port}`);
+  console.log(`Server is running on port: ${port}`);
 });
